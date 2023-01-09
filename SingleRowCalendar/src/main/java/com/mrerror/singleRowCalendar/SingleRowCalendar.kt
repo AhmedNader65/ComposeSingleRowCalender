@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mrerror.singleRowCalendar.DateUtils.getFutureDates
 import com.mrerror.singleRowCalendar.SingleRowCalendarDefaults.Grey500
-import com.mrerror.singlerowcalendar.R
 import java.util.*
 
 
@@ -39,12 +38,11 @@ fun SingleRowCalendar(
     @DrawableRes nextDrawableRes: Int = R.drawable.baseline_keyboard_double_arrow_right_24,
     @DrawableRes prevDrawableRes: Int = R.drawable.baseline_keyboard_double_arrow_left_24,
     onSelectedDayChange: (Date) -> Unit,
-
     ) {
     val calendar = Calendar.getInstance(Locale.getDefault())
+    var selectedDate by rememberSaveable { mutableStateOf(calendar.time) }
     calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
     var currentDate by rememberSaveable { mutableStateOf(calendar.time) }
-    var selectedDate by rememberSaveable { mutableStateOf(calendar.time) }
     Column(modifier) {
 
         WeekHeader(firstDayDate = currentDate,

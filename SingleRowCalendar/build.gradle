@@ -2,6 +2,13 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
 }
+ext {
+    PUBLISH_GROUP_ID = 'io.github.ahmednader65'
+    PUBLISH_VERSION = '1.0.1'
+    PUBLISH_ARTIFACT_ID = 'ComposeSingleRowCalender'
+}
+
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 android {
     namespace 'com.mrerror.singleRowCalendar'
     compileSdk 33

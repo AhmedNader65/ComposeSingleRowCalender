@@ -1,0 +1,78 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+task androidSourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    if (project.plugins.findPlugin("com.android.library")) {
+        // For Android libraries
+        from android.sourceSets.main.java.srcDirs
+        from android.sourceSets.main.kotlin.srcDirs
+    } else {
+        // For pure Kotlin libraries, in case you have them
+        from sourceSets.main.java.srcDirs
+        from sourceSets.main.kotlin.srcDirs
+    }
+}
+
+artifacts {
+    archives androidSourcesJar
+}
+
+group = PUBLISH_GROUP_ID
+version = PUBLISH_VERSION
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                // The coordinates of the library, being set from variables that
+                // we'll set up later
+                groupId PUBLISH_GROUP_ID
+                artifactId PUBLISH_ARTIFACT_ID
+                version PUBLISH_VERSION
+
+                // Two artifacts, the `aar` (or `jar`) and the sources
+                if (project.plugins.findPlugin("com.android.library")) {
+                    from components.release
+                } else {
+                    from components.java
+                }
+
+                artifact androidSourcesJar
+//                artifact javadocJar
+
+                // Mostly self-explanatory metadata
+                pom {
+                    name = 'ComposeSingleRowCalender'
+                    description = 'ComposeSingleRowCalender is an open-source Kotlin Compose library which helps creating single row calendar views'
+                    url = 'https://github.com/AhmedNader65/ComposeSingleRowCalender'
+                    licenses {
+                        license {
+                            name = 'MIT License'
+                            url = 'http://www.opensource.org/licenses/mit-license.php'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'AhmedNader65'
+                            name = 'Ahmed Nader'
+                            email = 'Ahmed.nader1994@gmail.com'
+                        }
+                        // Add all other devs here...
+                    }
+
+                    // Version control info - if you're using GitHub, follow the
+                    // format as seen here
+                    scm {
+                        connection = 'scm:git:git:github.com/AhmedNader65/ComposeSingleRowCalender.git'
+                        developerConnection = 'scm:git:ssh://github.com/AhmedNader65/ComposeSingleRowCalender.git'
+                        url = 'https://github.com/AhmedNader65/ComposeSingleRowCalender/tree/master'
+                    }
+                }
+            }
+        }
+    }
+}
+signing {
+    sign publishing.publications
+}
